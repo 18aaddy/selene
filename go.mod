@@ -35,11 +35,8 @@ require (
 	github.com/spf13/cast v1.6.0 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/supranational/blst v0.3.11 // indirect
-<<<<<<< HEAD
 	github.com/ugorji/go/codec v1.2.12 // indirect
 	github.com/wealdtech/go-merkletree v1.0.0 // indirect
-=======
->>>>>>> bf867ad (Updated)
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.9.0 // indirect
 	golang.org/x/crypto v0.22.0 // indirect

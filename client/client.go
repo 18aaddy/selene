@@ -2,6 +2,7 @@ package client
 
 import (
 	"github.com/BlocSoc-iitr/selene/config"
+	// "github.com/BlocSoc-iitr/selene/consensus"
 )
 
 type ClientBuilder struct {
@@ -16,4 +17,13 @@ type ClientBuilder struct {
 	Fallback *string
 	LoadExternalFallback bool
 	StrictCheckpointAge bool
+}
+
+func (c Client) Build() (Client, error) {
+	return Client{}, nil
+}
+
+type Client struct {
+	Node *Node
+	Rpc *Rpc
 }
