@@ -22,6 +22,7 @@ import (
 	"github.com/BlocSoc-iitr/selene/consensus/consensus_core"
 	"github.com/BlocSoc-iitr/selene/consensus/rpc"
 	"github.com/BlocSoc-iitr/selene/utils"
+	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/BlocSoc-iitr/selene/utils/bls"
 	geth "github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
@@ -956,17 +957,21 @@ func processTransaction(txBytes *[1073741824]byte, blockHash consensus_core.Byte
 
 	tx := common.Transaction{
 		Hash:             txEnvelope.Hash(),
-		Nonce:            txEnvelope.Nonce(),
-		BlockHash:        blockHash,
-		BlockNumber:      blockNumber,
-		TransactionIndex: index,
+		Nonce:            hexutil.Uint64(txEnvelope.Nonce()),
+		BlockHash:        func() string {
+			data := [32]byte(blockHash)
+			hexString := hex.EncodeToString(data[:])
+			return hexString
+		}(),
+		BlockNumber:      hexutil.Uint64(*blockNumber),
+		TransactionIndex: hexutil.Uint64(index),
 		To:               txEnvelope.To(),
-		Value:            txEnvelope.Value(),
-		GasPrice:         txEnvelope.GasPrice(),
-		Gas:              txEnvelope.Gas(),
+		Value:            hexutil.Big(*txEnvelope.Value()),
+		GasPrice:         hexutil.Big(*txEnvelope.GasPrice()),
+		Gas:              hexutil.Uint64(txEnvelope.Gas()),
 		Input:            txEnvelope.Data(),
-		ChainID:          txEnvelope.ChainId(),
-		TransactionType:  txEnvelope.Type(),
+		ChainID:          hexutil.Big(*txEnvelope.ChainId()),
+		TransactionType:  hexutil.Uint64(txEnvelope.Type()),
 	}
 
 	// Handle signature and transaction type logic
@@ -990,15 +995,15 @@ func processTransaction(txBytes *[1073741824]byte, blockHash consensus_core.Byte
 	case types.AccessListTxType:
 		tx.AccessList = txEnvelope.AccessList()
 	case types.DynamicFeeTxType:
-		tx.MaxFeePerGas = new(big.Int).Set(txEnvelope.GasFeeCap())
-		tx.MaxPriorityFeePerGas = new(big.Int).Set(txEnvelope.GasTipCap())
+		tx.MaxFeePerGas = hexutil.Big(*new(big.Int).Set(txEnvelope.GasFeeCap()))
+		tx.MaxPriorityFeePerGas = hexutil.Big(*new(big.Int).Set(txEnvelope.GasTipCap()))
 	case types.BlobTxType:
-		tx.MaxFeePerGas = new(big.Int).Set(txEnvelope.GasFeeCap())
-		tx.MaxPriorityFeePerGas = new(big.Int).Set(txEnvelope.GasTipCap())
-		tx.MaxFeePerBlobGas = new(big.Int).Set(txEnvelope.BlobGasFeeCap())
+		tx.MaxFeePerGas = hexutil.Big(*new(big.Int).Set(txEnvelope.GasFeeCap()))
+		tx.MaxPriorityFeePerGas = hexutil.Big(*new(big.Int).Set(txEnvelope.GasTipCap()))
+		tx.MaxFeePerBlobGas = hexutil.Big(*new(big.Int).Set(txEnvelope.BlobGasFeeCap()))
 		tx.BlobVersionedHashes = txEnvelope.BlobHashes()
 	default:
-		fmt.Println("Unhandled transaction type")
+		fmt.Print("Unhandled transaction type")
 	}
 
 	return tx, nil

@@ -1,28 +1,17 @@
 package execution
 
 import (
+	"encoding/hex"
+	"math/big"
 	"strconv"
 
 	seleneCommon "github.com/BlocSoc-iitr/selene/common"
-	// "github.com/BlocSoc-iitr/selene/utils"
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/rpc"
 	"github.com/holiman/uint256"
-
-	// "github.com/ethereum/go-ethereum/common"
-	// "github.com/ethereum/go-ethereum/common/hexutil"
-	// "github.com/ethereum/go-ethereum/rlp"
-	// "github.com/holiman/uint256"
-	// "bytes"
-	"encoding/hex"
-	// "fmt"
-	"math/big"
-	// "reflect"
-
-	// "golang.org/x/crypto/sha3"
 )
 
 type HttpRpc struct {
@@ -59,7 +48,7 @@ func (h *HttpRpc) GetProof(address *seleneCommon.Address, slots *[]common.Hash, 
 	}
 	go func() {
 		var proof EIP1186ProofResponse
-		err := h.provider.Call(&proof, "eth_getProof", "0x"+ hex.EncodeToString(address.Addr[:]), slotHex, toBlockNumArg(block))
+		err := h.provider.Call(&proof, "eth_getProof", "0x"+hex.EncodeToString(address.Addr[:]), slotHex, toBlockNumArg(block))
 		resultChan <- struct {
 			proof EIP1186ProofResponse
 			err   error
@@ -105,7 +94,7 @@ func (h *HttpRpc) GetCode(address *seleneCommon.Address, block uint64) ([]byte, 
 
 	go func() {
 		var code hexutil.Bytes
-		err := h.provider.Call(&code, "eth_getCode", "0x"+ hex.EncodeToString(address.Addr[:]), toBlockNumArg(block))
+		err := h.provider.Call(&code, "eth_getCode", "0x"+hex.EncodeToString(address.Addr[:]), toBlockNumArg(block))
 		resultChan <- struct {
 			code hexutil.Bytes
 			err  error

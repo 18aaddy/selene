@@ -8,7 +8,6 @@ import (
 	"github.com/holiman/uint256"
 )
 
-
 type ExecutionRpc interface {
 	New(rpc *string) (ExecutionRpc, error)
 	GetProof(address *seleneCommon.Address, slots *[]common.Hash, block uint64) (EIP1186ProofResponse, error)
